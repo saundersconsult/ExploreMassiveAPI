@@ -5,8 +5,38 @@ import requests
 from typing import Dict, List, Any, Optional
 from dotenv import load_dotenv
 import logging
+import time
+from collections import deque
 
 logger = logging.getLogger(__name__)
+
+
+class RateLimiter:
+    """Rate limiter for API calls (5 per minute)."""
+    
+    def __init__(self, calls_per_minute: int = 5):
+        self.calls_per_minute = calls_per_minute
+        self.min_interval = 60 / calls_per_minute  # 12 seconds per call
+        self.call_times = deque(maxlen=calls_per_minute)
+    
+    def wait_if_needed(self):
+        """Wait if necessary to respect rate limit."""
+        if len(self.call_times) < self.calls_per_minute:
+            # Haven't hit limit yet
+            self.call_times.append(time.time())
+            return
+        
+        # Check if oldest call is outside the window
+        oldest = self.call_times[0]
+        now = time.time()
+        time_since_oldest = now - oldest
+        
+        if time_since_oldest < 60:
+            wait_time = 60 - time_since_oldest + 0.1
+            logger.info(f"⏳ Rate limit: waiting {wait_time:.1f}s...")
+            time.sleep(wait_time)
+        
+        self.call_times.append(time.time())
 
 
 class MassiveAPIClient:
@@ -28,6 +58,7 @@ class MassiveAPIClient:
             raise ValueError("MASSIVE_API_KEY not configured. Set in config/massive.env or pass as argument.")
         
         self.session = requests.Session()
+        self.rate_limiter = RateLimiter(calls_per_minute=5)
         self._setup_headers()
     
     def _setup_headers(self):
@@ -51,6 +82,9 @@ class MassiveAPIClient:
         Returns:
             Response JSON
         """
+        # Respect rate limit
+        self.rate_limiter.wait_if_needed()
+        
         url = f"{self.base_url}{endpoint}"
         
         # Add API key to params
