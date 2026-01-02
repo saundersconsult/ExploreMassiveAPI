@@ -66,29 +66,34 @@ class MassiveAPIClient:
             logger.error(f"API request failed: {e}")
             raise
     
-    def get_holidays(self, exchange: str) -> List[Dict[str, Any]]:
-        """Fetch holidays for an exchange.
+    def get_market_holidays(self) -> List[Dict[str, Any]]:
+        """Fetch upcoming market holidays and their trading status.
         
-        NOTE: Massive.com API does not currently expose a holidays endpoint.
-        See holiday_fetcher.py for alternative approaches:
-        - External calendar APIs (ICS files, Google Calendar API)
-        - Manual holiday mapping
-        - Integration with broker holiday calendars (MT5, etc.)
+        This endpoint returns TRADING market closures and early closes, not all holidays.
+        Filters include: Thanksgiving, Christmas, Independence Day, etc.
         
-        Args:
-            exchange: Exchange code (NASDAQ, NYSE, etc.)
-            
         Returns:
-            List of holiday dictionaries (currently empty)
+            List of market holiday dictionaries with structure:
+            {
+                "date": "2020-11-26",
+                "exchange": "NYSE",
+                "name": "Thanksgiving",
+                "status": "closed" | "early-close",
+                "open": "2020-11-27T14:30:00.000Z" (if early-close),
+                "close": "2020-11-27T18:00:00.000Z" (if early-close)
+            }
         """
-        # TODO: Implement alternative holiday source
-        # Options:
-        # 1. Scrape from NASDAQ/NYSE websites
-        # 2. Use third-party API (e.g., holidays.gov, Google Calendar)
-        # 3. Maintain hardcoded list
-        # 4. Parse ICS files from exchanges
-        logger.warning("Holidays endpoint not available in Massive.com API; returning empty list")
-        return []
+        # Note: This endpoint is at /v1/, not /v3/
+        url = f"{self.base_url.replace('/v3', '/v1')}/marketstatus/upcoming"
+        params = {"apiKey": self.api_key}
+        
+        try:
+            response = self.session.get(url, params=params)
+            response.raise_for_status()
+            return response.json() if isinstance(response.json(), list) else response.json().get("results", [])
+        except Exception as e:
+            logger.error(f"API request failed: {e}")
+            raise
     
     def get_dividends(self, ticker: str) -> List[Dict[str, Any]]:
         """Fetch dividend history for a ticker.

@@ -12,19 +12,28 @@ Massive.com (formerly Polygon) provides REST API, WebSocket, and Flat Files acce
 
 ## Discovered Endpoints
 
-### Reference Data
+### Market Operations
 
-#### Holidays
+#### Market Holidays ✅ WORKING
 ```
-GET /reference/holidays
+GET /v1/marketstatus/upcoming
 Query Parameters:
-  - exchange: Exchange code (NASDAQ, NYSE, AMEX, etc.)
   - apiKey: Your API key
 
-Status: ❌ NOT AVAILABLE in Massive.com API (404 error)
+Returns: Array of trading market holidays with status
+  {
+    "date": "2026-01-19",
+    "exchange": "NASDAQ",
+    "name": "Martin Luther King, Jr. Day",
+    "status": "closed" | "early-close",
+    "open": "HH:MM:SS.000Z" (if early-close),
+    "close": "HH:MM:SS.000Z" (if early-close)
+  }
 ```
 
-**Note**: Massive.com does not expose a holidays/trading calendar endpoint. See [Alternative Holiday Sources](#alternative-holiday-sources) for workarounds.
+**Status**: ✅ Tested and confirmed working
+**Use Case**: Block trading signals on market closures; adjust for early closes
+**Trading Holidays**: Thanksgiving, Christmas, Independence Day, MLK Day, Presidents Day, Memorial Day, Labor Day, Good Friday, Juneteenth, etc.
 
 #### Dividends (✅ WORKING)
 ```
@@ -112,13 +121,15 @@ data = response.json()
 
 | Endpoint | Status | Integration |
 |----------|--------|-------------|
+| /v1/marketstatus/upcoming | ✅ Working | api_client.py, holiday_fetcher.py (TRADING holidays) |
 | /reference/dividends | ✅ Working | api_client.py, tested |
-| /reference/holidays | ❌ Not Available | Use alternative sources |
 | /markets/{market}/hours | ❓ Unknown | Not tested |
 
 ## Alternative Holiday Sources
 
-Since Massive.com doesn't provide a holidays endpoint, use these alternatives:
+**NOT NEEDED** - Massive.com API now provides trading holidays! 
+
+But here are alternatives if you need them:
 
 ### 1. **NASDAQ/NYSE Holiday Calendar (Free)**
 
@@ -177,24 +188,38 @@ US_MARKET_HOLIDAYS = {
 
 ## Recommended Approach for Your Project
 
-**Use `holidays` Python package** (simplest and most reliable):
+**Use Massive.com Market Holidays API** (native solution):
 
 ```python
 # Install
-pip install holidays
+pip install -r requirements.txt
 
-# Use in holiday_fetcher.py
-import holidays
-from datetime import date
+# Use in code
+from holiday_fetcher import HolidayFetcher
 
-def is_market_holiday(check_date=None, exchange="NASDAQ"):
-    """Check if date is a US market holiday."""
-    check_date = check_date or date.today()
-    us_holidays = holidays.US(years=check_date.year)
-    return check_date in us_holidays
+fetcher = HolidayFetcher("NASDAQ")
+
+# Check if market is closed
+if fetcher.is_market_closed():
+    logger.info("Market closed - skip trading")
+    return
+
+# Check for early closes
+if fetcher.is_early_close():
+    early_close = fetcher.get_early_close_time()
+    logger.info(f"Market closes early at {early_close}")
+
+# Get holiday details
+holiday = fetcher.get_holiday_info()
+if holiday:
+    print(f"Holiday: {holiday['name']} - {holiday['status']}")
 ```
 
-This integrates cleanly without requiring API keys or external dependencies (except holidays package).
+**Advantages**:
+- ✅ Real trading market holidays only (no calendar noise)
+- ✅ Includes early-close times for Thanksgiving, day after Thanksgiving
+- ✅ Native Massive.com integration (same API key)
+- ✅ Always current (refreshes daily)
 
 ## Testing
 
