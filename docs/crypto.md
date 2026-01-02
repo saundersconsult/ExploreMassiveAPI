@@ -2,7 +2,7 @@
 
 **Base URL**: https://api.massive.com  
 **Rate Limit**: 5 calls/minute (plan limit)  
-**Status**: Core endpoints untested; real-time expected available (verify with key)
+**Status**: Prev close & daily open/close ✅; real-time last trade ❌ (403 plan limit); other endpoints untested
 
 ## Reference Data
 - GET /v3/reference/tickers?market=crypto — List crypto assets
@@ -13,7 +13,7 @@
 - GET /v2/aggs/grouped/locale/global/market/crypto/DATE — All crypto aggregates
 
 ## Real-Time
-- GET /v1/last/crypto/BTC/USD — Last trade
+- ❌ GET /v1/last/crypto/BTC/USD — Last trade (403 on current plan)
 
 ## Daily Operations
 - GET /v1/open-close/crypto/BTC/USD/DATE — Daily open/close
@@ -36,4 +36,6 @@
 - Daily open/close: `GET /v1/open-close/crypto/BTC/USD/2024-01-01`
 
 ## Testing Status
-- Endpoints not yet exercised in this workspace (run against sandbox/paid key to confirm access)
+- ✅ Prev close (`/v2/aggs/ticker/X:BTCUSD/prev`) returns 200
+- ✅ Daily open/close (`/v1/open-close/crypto/BTC/USD/{date}`) returns 200
+- ❌ Last trade real-time (`/v1/last/crypto/BTC/USD`) returns 403 (not entitled on current plan)

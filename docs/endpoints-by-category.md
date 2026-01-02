@@ -25,17 +25,18 @@ Use these per-category references:
 | Forex Reference | Ticker list | ✅ Full access |
 | Stock OHLC | Daily open/close, previous close | ✅ Full access |
 | Market Operations | Holidays, status | ✅ Full access |
+| Crypto Daily | Prev close, open/close | ✅ Working |
 
 ### ❌ Confirmed Forbidden (403)
 | Category | Endpoints | Reason |
 |----------|-----------|--------|
 | Stock Real-Time | Last trade, quotes, snapshots | Plan limitation |
 | Forex Real-Time | Last quotes, snapshots | Plan limitation |
+| Crypto Real-Time | Last trade | Plan limitation |
 
 ### ⚠️ Not Yet Tested
 | Category | Status |
 |----------|--------|
-| Crypto endpoints | Untested |
 | Options endpoints | Untested |
 | Futures endpoints | Untested |
 | Benzinga endpoints | Untested |
