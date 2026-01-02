@@ -101,6 +101,3 @@ Once holidays API is validated, integrate into main listener:
 - Filter news events using holiday calendar
 - Sync with existing news blackout framework
 
-## License
-
-MIT
