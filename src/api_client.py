@@ -69,14 +69,26 @@ class MassiveAPIClient:
     def get_holidays(self, exchange: str) -> List[Dict[str, Any]]:
         """Fetch holidays for an exchange.
         
+        NOTE: Massive.com API does not currently expose a holidays endpoint.
+        See holiday_fetcher.py for alternative approaches:
+        - External calendar APIs (ICS files, Google Calendar API)
+        - Manual holiday mapping
+        - Integration with broker holiday calendars (MT5, etc.)
+        
         Args:
             exchange: Exchange code (NASDAQ, NYSE, etc.)
             
         Returns:
-            List of holiday dictionaries
+            List of holiday dictionaries (currently empty)
         """
-        response = self._make_request("/reference/holidays", params={"exchange": exchange})
-        return response.get("results", [])
+        # TODO: Implement alternative holiday source
+        # Options:
+        # 1. Scrape from NASDAQ/NYSE websites
+        # 2. Use third-party API (e.g., holidays.gov, Google Calendar)
+        # 3. Maintain hardcoded list
+        # 4. Parse ICS files from exchanges
+        logger.warning("Holidays endpoint not available in Massive.com API; returning empty list")
+        return []
     
     def get_dividends(self, ticker: str) -> List[Dict[str, Any]]:
         """Fetch dividend history for a ticker.
