@@ -1,3 +1,5 @@
+# Python 3.11.x required
+# This project requires Python 3.11 or higher but lower than 3.12
 requests>=2.31.0
 python-dotenv>=1.0.0
 pyyaml>=6.0

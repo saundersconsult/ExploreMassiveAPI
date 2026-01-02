@@ -1,0 +1,12 @@
+[project]
+name = "ExploreMassiveAPI"
+version = "0.1.0"
+description = "Exploration and integration of Massive.com APIs for trading automation with market holidays support"
+requires-python = ">=3.11,<3.12"
+authors = [
+    {name = "Shawn Saunders", email = "shawn@example.com"}
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
