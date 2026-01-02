@@ -74,7 +74,7 @@ class MassiveAPIClient:
         """Make HTTP request to API endpoint.
         
         Args:
-            endpoint: API endpoint (e.g., "/reference/holidays")
+            endpoint: API endpoint (e.g., "/reference/holidays" or "/v2/last/trade/AAPL")
             method: HTTP method
             params: Query parameters
             data: Request body data
@@ -85,7 +85,12 @@ class MassiveAPIClient:
         # Respect rate limit
         self.rate_limiter.wait_if_needed()
         
-        url = f"{self.base_url}{endpoint}"
+        # If endpoint already contains a version (v1, v2, v3), use it with base domain
+        if endpoint.startswith('/v'):
+            base = self.base_url.replace('/v3', '')  # Remove v3 from base
+            url = f"{base}{endpoint}"
+        else:
+            url = f"{self.base_url}{endpoint}"
         
         # Add API key to params
         if params is None:
