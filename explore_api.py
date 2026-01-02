@@ -34,11 +34,10 @@ def main():
         print("  2. 💰 Get Dividends (by ticker)")
         print("  3. 📈 Get Stock Details (by ticker)")
         print("  4. 📊 Search Tickers")
-        print("  5. 🔍 Test Custom Endpoint")
-        print("  6. ℹ️  API Info")
-        print("  7. ❌ Exit")
+        print("  5. ℹ️  API Info")
+        print("  6. ❌ Exit")
         
-        choice = input("\nSelect option (1-7): ").strip()
+        choice = input("\nSelect option (1-6): ").strip()
         
         if choice == "1":
             try:
@@ -73,14 +72,22 @@ def main():
                 logger.info(f"\n⏳ Fetching details for {ticker}...")
                 result = client._make_request(f"/reference/tickers/{ticker}")
                 logger.info(f"✅ Ticker details for {ticker}:\n")
-                if 'results' in result and result['results']:
-                    for item in result['results'][:5]:
-                        print(f"\n  Symbol: {item.get('ticker', 'N/A')}")
-                        print(f"  Name: {item.get('name', 'N/A')}")
-                        print(f"  Type: {item.get('type', 'N/A')}")
-                        print(f"  Market: {item.get('market', 'N/A')}")
-                    if len(result['results']) > 5:
-                        print(f"\n  ... and {len(result['results']) - 5} more results")
+                if 'results' in result:
+                    item = result['results']
+                    print(f"  Symbol: {item.get('ticker', 'N/A')}")
+                    print(f"  Name: {item.get('name', 'N/A')}")
+                    print(f"  Type: {item.get('type', 'N/A')}")
+                    print(f"  Market: {item.get('market', 'N/A')}")
+                    print(f"  Exchange: {item.get('primary_exchange', 'N/A')}")
+                    print(f"  Currency: {item.get('currency_name', 'N/A')}")
+                    print(f"  Active: {item.get('active', 'N/A')}")
+                    if item.get('market_cap'):
+                        print(f"  Market Cap: ${item.get('market_cap'):,.0f}")
+                    if item.get('address'):
+                        addr = item['address']
+                        print(f"  HQ: {addr.get('address1')}, {addr.get('city')}, {addr.get('state')}")
+                else:
+                    logger.warning("No results found")
             except Exception as e:
                 logger.error(f"❌ Error: {e}")
         
@@ -100,17 +107,6 @@ def main():
                 logger.error(f"❌ Error: {e}")
         
         elif choice == "5":
-            endpoint = input("\nEnter endpoint path (e.g., /query/tickers): ").strip()
-            method = input("Enter HTTP method (GET/POST) [GET]: ").strip().upper() or "GET"
-            try:
-                logger.info(f"\n⏳ Testing {method} {endpoint}...")
-                result = client._make_request(endpoint, method=method)
-                logger.info(f"✅ Response:\n")
-                pretty_print(result)
-            except Exception as e:
-                logger.error(f"❌ Error: {e}")
-        
-        elif choice == "6":
             print("\n" + "=" * 70)
             print("API INFORMATION")
             print("=" * 70)
@@ -120,9 +116,10 @@ def main():
             print("  • GET /reference/dividends?ticker=AAPL - Dividend history")
             print("  • GET /reference/tickers - Search tickers (with optional 'search' param)")
             print("  • GET /reference/tickers/{TICKER} - Get specific ticker details")
-            print("\nNote: Use the menu options above to explore these endpoints!")
+            print("\n⚠️  RATE LIMIT: 5 calls per minute (handled automatically)")
+            print("Note: Use the menu options above to explore these endpoints!")
         
-        elif choice == "7":
+        elif choice == "6":
             logger.info("\n👋 Goodbye!")
             break
         
