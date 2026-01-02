@@ -27,6 +27,7 @@ Use these per-category references:
 | Market Operations | Holidays, status | ✅ Full access |
 | Crypto Daily | Prev close, open/close | ✅ Working |
 | Crypto Aggregates | Range + grouped daily | ✅ Working |
+| Crypto Minute Aggregates | 1-minute range (tested BTC/ETH) | ✅ Working |
 
 ### ❌ Confirmed Forbidden (403)
 | Category | Endpoints | Reason |
@@ -34,6 +35,7 @@ Use these per-category references:
 | Stock Real-Time | Last trade, quotes, snapshots | Plan limitation |
 | Forex Real-Time | Last quotes, snapshots | Plan limitation |
 | Crypto Real-Time | Last trade | Plan limitation |
+| Crypto Tick Trades/Quotes | v3 trades/quotes | Plan limitation |
 
 ### ⚠️ Not Yet Tested
 | Category | Status |

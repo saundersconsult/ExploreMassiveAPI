@@ -2,7 +2,7 @@
 
 **Base URL**: https://api.massive.com  
 **Rate Limit**: 5 calls/minute (plan limit)  
-**Status**: Prev close, daily range, grouped daily, daily open/close ✅; real-time last trade ❌ (403 plan limit)
+**Status**: Prev close, daily range, grouped daily, daily open/close ✅; minute aggregates ✅; real-time last trade & tick trades/quotes ❌ (403 plan limit)
 
 ## Reference Data
 - GET /v3/reference/tickers?market=crypto — List crypto assets
@@ -14,6 +14,10 @@
 
 ## Real-Time
 - ❌ GET /v1/last/crypto/BTC/USD — Last trade (403 on current plan)
+  
+## Tick-Level
+- ❌ GET /v3/trades/X:BTCUSD — Historical trades (403 on current plan)
+- ❌ GET /v3/quotes/X:BTCUSD — Historical quotes (403 on current plan)
 
 ## Daily Operations
 - GET /v1/open-close/crypto/BTC/USD/DATE — Daily open/close
@@ -32,6 +36,7 @@
 - List assets: `GET /v3/reference/tickers?market=crypto&limit=50`
 - Previous close: `GET /v2/aggs/ticker/X:BTCUSD/prev`
 - Daily range: `GET /v2/aggs/ticker/X:BTCUSD/range/1/day/2024-01-01/2024-12-31`
+- Minute range: `GET /v2/aggs/ticker/X:BTCUSD/range/1/minute/2024-12-31/2024-12-31`
 - Grouped daily: `GET /v2/aggs/grouped/locale/global/market/crypto/2024-12-31`
 - Daily open/close: `GET /v1/open-close/crypto/BTC/USD/2024-01-01`
 - Last trade: `GET /v1/last/crypto/BTC/USD`
@@ -40,7 +45,10 @@
 ## Testing Status
 - ✅ BTC prev close (`/v2/aggs/ticker/X:BTCUSD/prev`) — 200
 - ✅ BTC daily range aggregates (`/v2/aggs/ticker/X:BTCUSD/range/1/day/...`) — 200
+- ✅ BTC minute aggregates (`/v2/aggs/ticker/X:BTCUSD/range/1/minute/...`) — 200
 - ✅ ETH prev close (`/v2/aggs/ticker/X:ETHUSD/prev`) — 200
 - ✅ ETH daily open/close (`/v1/open-close/crypto/ETH/USD/{date}`) — 200
 - ✅ Grouped daily all assets (`/v2/aggs/grouped/locale/global/market/crypto/{date}`) — 200
 - ❌ Last trade real-time (`/v1/last/crypto/BTC/USD`) — 403 (plan entitlement)
+- ❌ Tick trades (`/v3/trades/X:BTCUSD`) — 403 (plan entitlement)
+- ❌ Tick quotes (`/v3/quotes/X:BTCUSD`) — 403 (plan entitlement)
