@@ -26,6 +26,7 @@ Use these per-category references:
 | Stock OHLC | Daily open/close, previous close | ✅ Full access |
 | Market Operations | Holidays, status | ✅ Full access |
 | Crypto Daily | Prev close, open/close | ✅ Working |
+| Crypto Aggregates | Range + grouped daily | ✅ Working |
 
 ### ❌ Confirmed Forbidden (403)
 | Category | Endpoints | Reason |
