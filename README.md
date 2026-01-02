@@ -8,6 +8,7 @@ Exploration and integration of Massive.com APIs for trading automation, with foc
 - **API Explorer**: Systematic exploration of Massive.com's available endpoints
 - **Reference Data**: Dividends, splits, corporate actions
 - **Exchange Data**: Market hours, holidays, trading calendars
+- **Per-Category Docs**: Stocks, Forex, Crypto, Options, Futures, Benzinga, Technical, Treasury, Universal snapshot
 
 ## Quick Start
 
@@ -44,7 +45,7 @@ EXCHANGE=NASDAQ
 python src/api_explorer.py
 
 # Fetch exchange holidays
-python src/fetch_holidays.py --exchange NASDAQ
+python src/holiday_fetcher.py --exchange NASDAQ
 
 # Run tests
 pytest tests/
@@ -52,11 +53,10 @@ pytest tests/
 
 ## API Documentation
 
-- [Massive.com Official Docs](https://massive.com/docs)
-- [GitHub Repositories](https://github.com/massive-data)
-  - `mcp_massive`: MCP integration
-  - `client-python`: Official Python SDK
-  - `client-go`, `client-js`, `client-jvm`: Other language clients
+- Massive.com Official Docs: https://massive.com/docs
+- Massive.com System Status: https://massive.com/system
+- Local reference (index): [docs/endpoints-by-category.md](docs/endpoints-by-category.md)
+- Per-category references: [docs/stocks.md](docs/stocks.md), [docs/forex.md](docs/forex.md), [docs/crypto.md](docs/crypto.md), [docs/options.md](docs/options.md), [docs/futures.md](docs/futures.md), [docs/benzinga.md](docs/benzinga.md), [docs/technical-indicators.md](docs/technical-indicators.md), [docs/federal.md](docs/federal.md), [docs/universal.md](docs/universal.md)
 
 ## Project Structure
 
@@ -74,8 +74,17 @@ config/
   massive.env.example    # Template for API credentials
   
 docs/
-  endpoints.md           # Discovered API endpoints
-  integration-guide.md   # Integration with Signals-Telegram-MT5
+  endpoints-by-category.md  # Index linking to per-category references
+  stocks.md                 # Stocks endpoints
+  forex.md                  # Forex endpoints
+  crypto.md                 # Crypto endpoints
+  options.md                # Options endpoints
+  futures.md                # Futures endpoints
+  benzinga.md               # Benzinga feeds
+  technical-indicators.md   # Technical indicators
+  federal.md                # Treasury yields
+  universal.md              # Universal snapshot
+  integration-guide.md      # Integration with Signals-Telegram-MT5
 ```
 
 ## Discovered Endpoints
